@@ -1,0 +1,30 @@
+name: Dispatch Orbit docs rebuild
+
+# After a listing merges, ask almasix-orbit to rebuild orbit.almasix.com so
+# /plugins picks up the new registry without waiting for an Orbit commit.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch:
+    name: Trigger Orbit docs.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: repository_dispatch almasix-orbit
+        env:
+          GH_TOKEN: ${{ secrets.ORBIT_DOCS_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::ORBIT_DOCS_DISPATCH_TOKEN is not set — skip docs rebuild dispatch"
+            exit 0
+          fi
+          gh api repos/almasix-dev/almasix-orbit/dispatches \
+            -f event_type=marketplace-registry-updated \
+            -f client_payload[source]=orbit-plugins \
+            -f client_payload[sha]="${GITHUB_SHA}"
