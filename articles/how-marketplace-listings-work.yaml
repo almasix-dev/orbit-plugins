@@ -1,0 +1,48 @@
+name: How marketplace listings work
+slug: how-marketplace-listings-work
+summary: Where Orbit plugin listings live, how they reach the public catalog, and what authors submit in a pull request.
+body: |
+  ## The registry and the catalog
+
+  Plugin listings are not stored in the Orbit framework repository. Authors open a
+  pull request against the
+  [orbit-plugins](https://github.com/almasix-dev/orbit-plugins) registry with YAML,
+  a thumbnail, and optional screenshots. After merge, the Orbit docs site clones
+  that registry at build time and publishes the card on
+  [orbit.almasix.com/plugins](https://orbit.almasix.com/plugins/).
+
+  ## What you submit
+
+  - An **author** profile (`authors/<slug>.yaml`) the first time you publish.
+  - A **plugin** listing (`plugins/<slug>.yaml`) with summary, markdown description,
+    categories, Orbit versions, and price.
+  - Images under `public/plugins/<slug>/`, referenced as site-absolute paths such as
+    `/plugins/<slug>/thumbnail.png`.
+
+  Keep the thumbnail cropped to the feature (16:9). A full panel shot with sidebar
+  and topbar reads as noise at card size.
+
+  ## After merge
+
+  Registry CI validates YAML and images. Merging to `main` rebuilds a small preview
+  site for reviewers and asks the Orbit docs workflow to rebuild, so the public
+  catalog updates without a separate Orbit commit.
+
+  Ready to list a package? Follow
+  [Get listed](https://orbit.almasix.com/plugins/get-listed/).
+author: almasix
+tags:
+  - marketplace
+  - publishing
+related_plugins:
+  - orbit-branding
+  - orbit-permission
+thumbnail: /articles/how-marketplace-listings-work/thumbnail.png
+images:
+  - src: /articles/how-marketplace-listings-work/figure.png
+    alt: Browse grid of Orbit marketplace plugin cards
+features:
+  official: true
+  featured: true
+status: published
+published_at: 2026-09-21

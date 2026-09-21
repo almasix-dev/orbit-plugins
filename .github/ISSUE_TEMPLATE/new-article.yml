@@ -1,0 +1,66 @@
+name: New marketplace article
+description: Propose a new marketplace article (then open a PR with the YAML and images)
+title: "[marketplace] New article: "
+labels: ["marketplace"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Articles ship via a **pull request** with YAML + Markdown body + images. Use this issue if you want feedback before filing the PR.
+
+        When ready, open a PR with the [new article template](https://github.com/almasix-dev/orbit-plugins/compare?template=new-article.md).
+  - type: input
+    id: name
+    attributes:
+      label: Article title
+      placeholder: How marketplace listings work
+    validations:
+      required: true
+  - type: input
+    id: slug
+    attributes:
+      label: Proposed slug
+      description: Kebab-case; becomes `articles/<slug>.yaml` and `/articles/<slug>/`.
+      placeholder: how-marketplace-listings-work
+    validations:
+      required: true
+  - type: input
+    id: author
+    attributes:
+      label: Author slug
+      placeholder: your-handle
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: One-sentence summary
+      description: Up to 200 characters; shown on the browse card.
+    validations:
+      required: true
+  - type: textarea
+    id: outline
+    attributes:
+      label: Outline
+      description: Main sections you plan to cover in the Markdown body.
+    validations:
+      required: true
+  - type: input
+    id: tags
+    attributes:
+      label: Tags
+      placeholder: marketplace, tutorial
+  - type: input
+    id: related
+    attributes:
+      label: Related plugin slugs (optional)
+      placeholder: orbit-branding, orbit-permission
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Before the PR
+      options:
+        - label: I have read the [write an article](https://orbit.almasix.com/plugins/write-an-article/) guide
+          required: true
+        - label: I will open a PR using the new-article template (not only this issue)
+          required: true

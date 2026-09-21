@@ -1,0 +1,31 @@
+# Template article — `status: draft` keeps it off the marketplace.
+# Copy this file to <your-slug>.yaml, fill it in, and set `status: published`.
+# Field reference: https://orbit.almasix.com/plugins/write-an-article/
+
+name: Example Article
+slug: example-article
+summary: One sentence describing what the article covers, up to 200 characters.
+body: |
+  ## Introduction
+
+  A few paragraphs of markdown. Headings, links, lists, and code fences all render
+  on the article page.
+
+  ## Next steps
+
+  Link readers to a related plugin or the [plugin marketplace](https://orbit.almasix.com/plugins/).
+author: example-author
+tags:
+  - tutorial
+# related_plugins:
+#   - example-plugin
+# thumbnail: /articles/example-article/thumbnail.jpg
+# images:
+#   - src: /articles/example-article/figure.png
+#     alt: Describe what the figure shows
+# canonical_url: https://example.com/blog/example-article
+features:
+  official: false
+# featured: false
+status: draft
+published_at: 2026-01-01
