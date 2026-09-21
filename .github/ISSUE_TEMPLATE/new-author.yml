@@ -1,0 +1,61 @@
+name: New author profile
+description: Propose a new marketplace author profile (then open a PR with the YAML)
+title: "[marketplace] New author: "
+labels: ["marketplace"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Author profiles ship via a **pull request** adding `authors/<slug>.yaml`. Use this issue for feedback first if you want.
+
+        When ready: [new author PR template](https://github.com/almasix-dev/orbit-plugins/compare?template=new-author.md).
+
+        An author page appears on the catalog once at least one of their listings is published.
+  - type: input
+    id: name
+    attributes:
+      label: Display name
+      placeholder: Jane Doe
+    validations:
+      required: true
+  - type: input
+    id: slug
+    attributes:
+      label: Proposed slug
+      description: Kebab-case; becomes `authors/<slug>.yaml`.
+      placeholder: jane-doe
+    validations:
+      required: true
+  - type: textarea
+    id: bio
+    attributes:
+      label: Bio
+      description: One or two sentences shown on the author page.
+    validations:
+      required: true
+  - type: input
+    id: github
+    attributes:
+      label: GitHub handle
+      placeholder: janedoe
+  - type: input
+    id: website
+    attributes:
+      label: Website
+      placeholder: https://example.com
+  - type: input
+    id: sponsor
+    attributes:
+      label: Sponsor URL
+      placeholder: https://github.com/sponsors/janedoe
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Before the PR
+      options:
+        - label: I have read the [get listed](https://orbit.almasix.com/plugins/get-listed/) guide
+          required: true
+        - label: Avatar (if any) will be 1:1 and at least 400×400
+          required: false
+        - label: I will open a PR using the new-author template
+          required: true

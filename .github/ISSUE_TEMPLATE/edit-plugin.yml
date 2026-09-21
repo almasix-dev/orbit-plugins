@@ -1,0 +1,63 @@
+name: Edit plugin listing
+description: Request or track an update to an existing marketplace listing
+title: "[marketplace] Plugin update: "
+labels: ["marketplace"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Prefer a **pull request** that edits `plugins/<slug>.yaml` (and images if needed). Use this issue for discussion, or if you cannot open the PR yourself.
+
+        PR template: [edit plugin](https://github.com/almasix-dev/orbit-plugins/compare?template=edit-plugin.md).
+  - type: input
+    id: slug
+    attributes:
+      label: Plugin slug
+      description: Filename without `.yaml`, same as the catalog path.
+      placeholder: acme-audit-log
+    validations:
+      required: true
+  - type: input
+    id: catalog
+    attributes:
+      label: Catalog URL
+      placeholder: https://orbit.almasix.com/plugins/acme-audit-log/
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of change
+      options:
+        - Copy / description / summary
+        - Screenshots or thumbnail
+        - Orbit versions / package metadata
+        - Price or checkout URL
+        - Pause (draft) or retire (archived)
+        - Remove listing
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: changes
+    attributes:
+      label: What should change
+      description: Be specific (new text, image paths, version list, new status, …).
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: New release, correction, retirement, etc.
+    validations:
+      required: true
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Next step
+      options:
+        - label: I will open (or have opened) a PR with the edit-plugin template
+          required: false
+        - label: I need a maintainer to apply this change
+          required: false

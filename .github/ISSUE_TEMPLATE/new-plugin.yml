@@ -1,0 +1,87 @@
+name: New plugin listing
+description: Propose a new marketplace listing (then open a PR with the YAML and images)
+title: "[marketplace] New plugin: "
+labels: ["marketplace"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Listings ship via a **pull request** with YAML + images. Use this issue if you want feedback before filing the PR, or to track work.
+
+        When ready, open a PR with the [new plugin template](https://github.com/almasix-dev/orbit-plugins/compare?template=new-plugin.md).
+  - type: input
+    id: name
+    attributes:
+      label: Plugin name
+      placeholder: Acme Audit Log
+    validations:
+      required: true
+  - type: input
+    id: slug
+    attributes:
+      label: Proposed slug
+      description: Kebab-case; becomes `plugins/<slug>.yaml` and `/plugins/<slug>/`.
+      placeholder: acme-audit-log
+    validations:
+      required: true
+  - type: input
+    id: author
+    attributes:
+      label: Author slug
+      description: Existing `authors/<slug>.yaml`, or note that you will add one in the same PR.
+      placeholder: your-handle
+    validations:
+      required: true
+  - type: dropdown
+    id: price
+    attributes:
+      label: Price
+      options:
+        - Free (PyPI)
+        - Paid
+    validations:
+      required: true
+  - type: input
+    id: repository
+    attributes:
+      label: Repository or store URL
+      placeholder: https://github.com/you/acme-orbit-audit-log
+    validations:
+      required: true
+  - type: input
+    id: package
+    attributes:
+      label: PyPI package (free plugins)
+      placeholder: acme-orbit-audit-log
+  - type: textarea
+    id: summary
+    attributes:
+      label: One-sentence summary
+      description: Up to 200 characters; shown on the browse card.
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What it does
+      description: Problem it solves, how someone installs and registers it on a panel.
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Orbit versions tested
+      placeholder: "0.4"
+    validations:
+      required: true
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Before the PR
+      options:
+        - label: I have read the [get listed](https://orbit.almasix.com/plugins/get-listed/) guide
+          required: true
+        - label: I will attach a 16:9 thumbnail (≥1280×720) cropped to the feature
+          required: true
+        - label: I will open a PR using the new-plugin template (not only this issue)
+          required: true
