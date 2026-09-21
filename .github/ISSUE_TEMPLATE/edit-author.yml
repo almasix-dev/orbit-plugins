@@ -1,0 +1,58 @@
+name: Edit author profile
+description: Request or track an update to an existing marketplace author profile
+title: "[marketplace] Author update: "
+labels: ["marketplace"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Prefer a **pull request** that edits `authors/<slug>.yaml`. Use this issue for discussion, or if you need a maintainer to apply the change.
+
+        PR template: [edit author](https://github.com/almasix-dev/orbit-plugins/compare?template=edit-author.md).
+  - type: input
+    id: slug
+    attributes:
+      label: Author slug
+      placeholder: jane-doe
+    validations:
+      required: true
+  - type: input
+    id: catalog
+    attributes:
+      label: Author page URL
+      placeholder: https://orbit.almasix.com/plugins/authors/jane-doe/
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of change
+      options:
+        - Name or bio
+        - Avatar
+        - Website / GitHub / sponsor links
+        - Slug rename (must update listing author fields too)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: changes
+    attributes:
+      label: What should change
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+    validations:
+      required: true
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Next step
+      options:
+        - label: I will open (or have opened) a PR with the edit-author template
+          required: false
+        - label: I need a maintainer to apply this change
+          required: false

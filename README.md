@@ -13,12 +13,24 @@ plugins/<slug>.yaml      # one file per listing
 public/plugins/          # thumbnails, screenshots, avatars
 ```
 
-## Submit a listing
+## Submit or update
 
-1. Scaffold draft YAML with `smith make:orbit-plugin …` (or copy `plugins/example-plugin.yaml`).
+Ship changes via **pull request** (YAML + images). Open an **issue** first only if you want feedback or need a maintainer to apply the change.
+
+| Intent | Issue | Pull request |
+|--------|-------|----------------|
+| New plugin | [New plugin](https://github.com/almasix-dev/orbit-plugins/issues/new?template=new-plugin.yml) | [PR template](https://github.com/almasix-dev/orbit-plugins/compare?template=new-plugin.md) |
+| Edit plugin | [Edit plugin](https://github.com/almasix-dev/orbit-plugins/issues/new?template=edit-plugin.yml) | [PR template](https://github.com/almasix-dev/orbit-plugins/compare?template=edit-plugin.md) |
+| New author | [New author](https://github.com/almasix-dev/orbit-plugins/issues/new?template=new-author.yml) | [PR template](https://github.com/almasix-dev/orbit-plugins/compare?template=new-author.md) |
+| Edit author | [Edit author](https://github.com/almasix-dev/orbit-plugins/issues/new?template=edit-author.yml) | [PR template](https://github.com/almasix-dev/orbit-plugins/compare?template=edit-author.md) |
+| New category | [Category issue](https://github.com/almasix-dev/orbit-plugins/issues/new?template=marketplace-category.yml) | Maintainer PR |
+
+Typical listing flow:
+
+1. Scaffold draft YAML with `smith make:orbit-plugin …` (or copy `plugins/example-plugin.yaml` / `authors/example-author.yaml`).
 2. Add images under `public/plugins/<your-slug>/`.
 3. Set `status: published`.
-4. Open a PR against this repository.
+4. Open a PR with the matching template above.
 
 Guides: [Get listed](https://orbit.almasix.com/plugins/get-listed/) · [Listing guidelines](https://orbit.almasix.com/plugins/guidelines/).
 

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Get listed guide
+    url: https://orbit.almasix.com/plugins/get-listed/
+    about: How to open a listing or author PR against this registry
+  - name: Listing guidelines
+    url: https://orbit.almasix.com/plugins/guidelines/
+    about: What reviewers check before a listing goes live
+  - name: Orbit docs / framework issues
+    url: https://github.com/almasix-dev/almasix-orbit/issues/new/choose
+    about: Bugs or features in Orbit itself belong in almasix-orbit
