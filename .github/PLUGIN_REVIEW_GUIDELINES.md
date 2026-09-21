@@ -122,6 +122,37 @@ Could you re-open this PR with "Allow edits by maintainers" enabled? It lets us 
 small things like a category key or a typo directly instead of sending the PR back.
 ```
 
+## Articles
+
+Articles are full Markdown pages under `articles/<slug>.yaml` with images in
+`public/articles/`. They are not plugins — reject `price`, `package`, `orbit_versions`,
+and plugin `categories` if someone pastes a listing template by mistake.
+
+Checklist for reviewers:
+
+1. CI green (author exists, related plugins resolve and are published, images present).
+2. `body` is substantive Markdown, not only a link out to another site (`canonical_url`
+   is fine as an optional original, but the Orbit page must stand alone).
+3. Thumbnail (if present) reads at card size; every `images[]` entry has real `alt` text.
+4. Tags are lowercase kebab or single words; keep the set small.
+5. `features.official` only when `author: almasix`.
+
+### Article body too thin
+
+```md
+Thanks for the draft! The marketplace article page should carry the full write-up in
+`body`, not just a teaser that points elsewhere. Could you expand it with the sections
+a reader needs, then keep `canonical_url` only if there is also an external original?
+```
+
+### Article images missing or wrong path
+
+```md
+Article images live under `public/articles/<slug>/` and must be referenced as
+`/articles/<slug>/…` (or an `https://` URL). Paths under `/plugins/` will not resolve
+for articles.
+```
+
 ## Unlisting
 
 Unlist (delete the YAML, keep the git history) when:

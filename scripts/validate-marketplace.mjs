@@ -2,7 +2,8 @@
  * Validate the Orbit plugin marketplace registry.
  *
  * Flat layout (this repo):
- *   categories.yaml, authors/*.yaml, plugins/*.yaml, public/plugins/**
+ *   categories.yaml, authors/*.yaml, plugins/*.yaml, articles/*.yaml,
+ *   public/plugins/**, public/articles/**
  *
  *   npm run validate
  *
@@ -26,7 +27,11 @@ export const RESERVED_SLUGS = new Set([
 	'paid',
 	'paid-vs-free',
 	'using',
+	'write-an-article',
 ]);
+
+/** Article URLs under `/articles/` — a listing may not claim these. */
+export const RESERVED_ARTICLE_SLUGS = new Set(['feed']);
 
 const SLUG = /^[a-z0-9-]+$/;
 const CURRENCY = /^[A-Z]{3}$/;
@@ -71,7 +76,7 @@ function checkLocalImage(errors, file, root, publicDir, field, value, imageHint)
 			errors,
 			file,
 			root,
-			`${field} must be a site-absolute path (/plugins/...) or an https URL`,
+			`${field} must be a site-absolute path (/plugins/... or /articles/...) or an https URL`,
 		);
 		return;
 	}
@@ -140,6 +145,8 @@ export function validateMarketplace(
 	if (!existsSync(pluginsDir)) {
 		failFile(pluginsDir, 'missing — add plugin YAML files here');
 	}
+	/** @type {Map<string, string>} slug → status */
+	const pluginStatuses = new Map();
 	for (const file of listYaml(pluginsDir)) {
 		const plugin = read(errors, file, root);
 		if (!plugin) continue;
@@ -191,6 +198,7 @@ export function validateMarketplace(
 		if (plugin.status && !STATUSES.has(plugin.status)) {
 			failFile(file, 'status must be `published`, `draft`, or `archived`');
 		}
+		pluginStatuses.set(expected, plugin.status ?? 'published');
 		if (plugin.features?.official === true && plugin.author !== 'almasix') {
 			failFile(file, 'features.official is reserved for listings whose author is `almasix`');
 		}
@@ -225,6 +233,79 @@ export function validateMarketplace(
 				shot?.src,
 				imageHint,
 			);
+		}
+	}
+
+	const articlesDir = path.join(registry, 'articles');
+	if (existsSync(articlesDir)) {
+		for (const file of listYaml(articlesDir)) {
+			const article = read(errors, file, root);
+			if (!article) continue;
+			const expected = path.basename(file, '.yaml');
+
+			if (article.slug !== expected) {
+				failFile(file, `slug "${article.slug}" must match the filename`);
+			}
+			if (!SLUG.test(expected)) failFile(file, 'filename must be kebab-case');
+			if (RESERVED_ARTICLE_SLUGS.has(expected)) {
+				failFile(file, `"${expected}" is a reserved articles URL`);
+			}
+
+			for (const field of ['name', 'summary', 'body', 'author', 'published_at']) {
+				if (!article[field]) failFile(file, `${field} is required`);
+			}
+			if (typeof article.summary === 'string' && article.summary.length > 200) {
+				failFile(file, 'summary must be 200 characters or fewer');
+			}
+			if (article.author && !authors.has(article.author)) {
+				failFile(file, `unknown author "${article.author}" — add authors/${article.author}.yaml`);
+			}
+
+			if (article.status && !STATUSES.has(article.status)) {
+				failFile(file, 'status must be `published`, `draft`, or `archived`');
+			}
+			if (article.features?.official === true && article.author !== 'almasix') {
+				failFile(file, 'features.official is reserved for listings whose author is `almasix`');
+			}
+
+			if (article.tags !== undefined && !Array.isArray(article.tags)) {
+				failFile(file, 'tags must be a list of strings');
+			}
+
+			const related = article.related_plugins;
+			if (related !== undefined && !Array.isArray(related)) {
+				failFile(file, 'related_plugins must be a list of plugin slugs');
+			} else if (Array.isArray(related)) {
+				const articleStatus = article.status ?? 'published';
+				for (const slug of related) {
+					if (!pluginStatuses.has(slug)) {
+						failFile(file, `unknown related plugin "${slug}"`);
+						continue;
+					}
+					if (articleStatus === 'published' && pluginStatuses.get(slug) !== 'published') {
+						failFile(
+							file,
+							`related plugin "${slug}" must be published when the article is published`,
+						);
+					}
+				}
+			}
+
+			checkUrl(errors, file, root, 'canonical_url', article.canonical_url);
+			checkLocalImage(errors, file, root, publicDir, 'thumbnail', article.thumbnail, imageHint);
+
+			for (const [index, image] of (article.images ?? []).entries()) {
+				if (!image?.alt) failFile(file, `images[${index}] needs alt text`);
+				checkLocalImage(
+					errors,
+					file,
+					root,
+					publicDir,
+					`images[${index}].src`,
+					image?.src,
+					imageHint,
+				);
+			}
 		}
 	}
 

@@ -1,6 +1,6 @@
 /**
- * Minimal static preview of published listings — for authors and reviewers.
- * The public catalog remains at orbit.almasix.com/plugins.
+ * Minimal static preview of published plugins and articles — for authors and reviewers.
+ * The public catalog remains at orbit.almasix.com/plugins and /articles.
  */
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -49,7 +49,7 @@ function layout({ title, body }) {
     * { box-sizing: border-box; }
     body { margin: 0; font: 16px/1.5 system-ui, sans-serif; color: var(--fg); background: #fff; }
     @media (prefers-color-scheme: dark) { body { background: #111; } }
-    header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+    header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
     header a { color: var(--accent); text-decoration: none; font-weight: 600; }
     main { max-width: 56rem; margin: 0 auto; padding: 1.5rem; }
     .note { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
@@ -63,21 +63,29 @@ function layout({ title, body }) {
     pre { overflow: auto; padding: 0.75rem; border-radius: 0.5rem; background: var(--card); border: 1px solid var(--border); }
     .shots { display: grid; gap: 0.75rem; }
     .shots img { max-width: 100%; border-radius: 0.5rem; border: 1px solid var(--border); }
+    .prose { white-space: pre-wrap; }
   </style>
 </head>
 <body>
-  <header><a href="/">Orbit plugins registry</a></header>
+  <header>
+    <a href="/">Plugins</a>
+    <a href="/articles/">Articles</a>
+  </header>
   <main>${body}</main>
 </body>
 </html>`;
 }
 
-function loadPublished() {
+function loadAuthors() {
 	const authors = new Map();
 	for (const name of readdirSync(path.join(root, 'authors')).filter((n) => n.endsWith('.yaml'))) {
 		const data = loadYaml(path.join(root, 'authors', name));
 		authors.set(data.slug, data);
 	}
+	return authors;
+}
+
+function loadPublishedPlugins(authors) {
 	const plugins = [];
 	for (const name of readdirSync(path.join(root, 'plugins')).filter((n) => n.endsWith('.yaml'))) {
 		const data = loadYaml(path.join(root, 'plugins', name));
@@ -86,6 +94,19 @@ function loadPublished() {
 	}
 	plugins.sort((a, b) => String(b.published_at).localeCompare(String(a.published_at)));
 	return plugins;
+}
+
+function loadPublishedArticles(authors) {
+	const articlesDir = path.join(root, 'articles');
+	if (!existsSync(articlesDir)) return [];
+	const articles = [];
+	for (const name of readdirSync(articlesDir).filter((n) => n.endsWith('.yaml'))) {
+		const data = loadYaml(path.join(articlesDir, name));
+		if ((data.status ?? 'published') !== 'published') continue;
+		articles.push({ ...data, authorProfile: authors.get(data.author) });
+	}
+	articles.sort((a, b) => String(b.published_at).localeCompare(String(a.published_at)));
+	return articles;
 }
 
 function writeIndex(plugins) {
@@ -152,12 +173,91 @@ function writeListing(plugin) {
 	);
 }
 
+function writeArticlesIndex(articles) {
+	const dir = path.join(dist, 'articles');
+	mkdirSync(dir, { recursive: true });
+	const cards = articles
+		.map((article) => {
+			const thumb = article.thumbnail
+				? `<img class="thumb" src="${escapeHtml(article.thumbnail)}" alt="" />`
+				: '';
+			const badges = [
+				...(article.features?.official ? ['<span class="badge">Official</span>'] : []),
+				...(article.features?.featured ? ['<span class="badge">Featured</span>'] : []),
+				...(article.tags ?? []).map((tag) => `<span class="badge">${escapeHtml(tag)}</span>`),
+			].join('');
+			return `<article class="card">
+  <a href="/articles/${escapeHtml(article.slug)}/">
+    ${thumb}
+    <h2>${escapeHtml(article.name)}</h2>
+    <p class="meta">${escapeHtml(article.summary)}</p>
+    <p>${badges}</p>
+  </a>
+</article>`;
+		})
+		.join('\n');
+
+	writeFileSync(
+		path.join(dir, 'index.html'),
+		layout({
+			title: 'Orbit marketplace articles',
+			body: `<p class="note">Preview of published articles. The live catalog is
+  <a href="https://orbit.almasix.com/articles/">orbit.almasix.com/articles</a>.</p>
+  <div class="grid">${cards || '<p class="meta">No published articles yet.</p>'}</div>`,
+		}),
+	);
+}
+
+function writeArticle(article) {
+	const dir = path.join(dist, 'articles', article.slug);
+	mkdirSync(dir, { recursive: true });
+	const thumb = article.thumbnail
+		? `<img class="thumb" src="${escapeHtml(article.thumbnail)}" alt="" />`
+		: '';
+	const shots = (article.images ?? [])
+		.map(
+			(image) =>
+				`<figure><img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" /><figcaption class="meta">${escapeHtml(image.alt)}</figcaption></figure>`,
+		)
+		.join('\n');
+	const related = (article.related_plugins ?? [])
+		.map((slug) => `<li><a href="/${escapeHtml(slug)}/">${escapeHtml(slug)}</a></li>`)
+		.join('');
+
+	writeFileSync(
+		path.join(dir, 'index.html'),
+		layout({
+			title: `${article.name} · Orbit articles`,
+			body: `<p class="meta"><a href="/articles/">← All articles</a></p>
+  <h1>${escapeHtml(article.name)}</h1>
+  <p>${escapeHtml(article.summary)}</p>
+  <p class="meta">${escapeHtml(article.authorProfile?.name ?? article.author)} · ${escapeHtml(String(article.published_at))}</p>
+  ${thumb}
+  <div class="prose">${escapeHtml(article.body)}</div>
+  <div class="shots">${shots}</div>
+  ${related ? `<h2>Related plugins</h2><ul>${related}</ul>` : ''}
+  <p class="note">Public article: <a href="https://orbit.almasix.com/articles/${escapeHtml(article.slug)}/">orbit.almasix.com/articles/${escapeHtml(article.slug)}/</a></p>`,
+		}),
+	);
+}
+
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
-const plugins = loadPublished();
+const authors = loadAuthors();
+const plugins = loadPublishedPlugins(authors);
+const articles = loadPublishedArticles(authors);
 writeIndex(plugins);
 for (const plugin of plugins) writeListing(plugin);
+writeArticlesIndex(articles);
+for (const article of articles) writeArticle(article);
 if (existsSync(path.join(root, 'public', 'plugins'))) {
 	cpSync(path.join(root, 'public', 'plugins'), path.join(dist, 'plugins'), { recursive: true });
 }
-console.log(`Built ${plugins.length} published listing(s) → dist/`);
+if (existsSync(path.join(root, 'public', 'articles'))) {
+	cpSync(path.join(root, 'public', 'articles'), path.join(dist, 'articles'), {
+		recursive: true,
+	});
+}
+console.log(
+	`Built ${plugins.length} plugin(s) and ${articles.length} article(s) → dist/`,
+);

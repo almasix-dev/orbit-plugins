@@ -1,0 +1,59 @@
+name: Edit marketplace article
+description: Request or track an update to an existing marketplace article
+title: "[marketplace] Article update: "
+labels: ["marketplace"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Prefer a **pull request** that edits `articles/<slug>.yaml` (and images if needed). Use this issue for discussion, or if you cannot open the PR yourself.
+
+        PR template: [edit article](https://github.com/almasix-dev/orbit-plugins/compare?template=edit-article.md).
+  - type: input
+    id: slug
+    attributes:
+      label: Article slug
+      placeholder: how-marketplace-listings-work
+    validations:
+      required: true
+  - type: input
+    id: catalog
+    attributes:
+      label: Catalog URL
+      placeholder: https://orbit.almasix.com/articles/how-marketplace-listings-work/
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of change
+      options:
+        - Body / summary
+        - Images or thumbnail
+        - Tags or related plugins
+        - Pause (draft) or retire (archived)
+        - Remove article
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: changes
+    attributes:
+      label: What should change
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+    validations:
+      required: true
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Next step
+      options:
+        - label: I will open (or have opened) a PR with the edit-article template
+          required: false
+        - label: I need a maintainer to apply this change
+          required: false
