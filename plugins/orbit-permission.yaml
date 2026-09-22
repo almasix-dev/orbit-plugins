@@ -47,7 +47,7 @@ price: free
 package: almasix-orbit-permission
 github_repo: almasix-dev/almasix-orbit-permission
 repository: https://github.com/almasix-dev/almasix-orbit-permission
-docs_url: https://orbit.almasix.com/plugins/orbit-permission/
+docs_url: https://github.com/almasix-dev/almasix-orbit-permission
 homepage: https://orbit.almasix.com/plugins/orbit-permission/
 changelog_url: https://github.com/almasix-dev/almasix-orbit-permission/releases
 license: MIT
