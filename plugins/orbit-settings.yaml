@@ -38,7 +38,7 @@ price: free
 package: almasix-orbit-settings
 github_repo: almasix-dev/almasix-orbit-settings
 repository: https://github.com/almasix-dev/almasix-orbit-settings
-docs_url: https://orbit.almasix.com/plugins/orbit-settings/
+docs_url: https://github.com/almasix-dev/almasix-orbit-settings#readme
 homepage: https://orbit.almasix.com/plugins/orbit-settings/
 changelog_url: https://github.com/almasix-dev/almasix-orbit-settings/releases
 license: MIT
