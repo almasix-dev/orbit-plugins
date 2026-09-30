@@ -37,7 +37,7 @@ github_repo: almasix-dev/almasix-orbit-workflows
 repository: https://github.com/almasix-dev/almasix-orbit-workflows
 docs_url: https://github.com/almasix-dev/almasix-orbit-workflows
 homepage: https://orbit.almasix.com/plugins/orbit-workflows/
-changelog_url: https://github.com/almasix-dev/almasix-orbit-workflows/commits/main
+changelog_url: https://github.com/almasix-dev/almasix-orbit-workflows/releases
 license: MIT
 keywords:
   - workflows
