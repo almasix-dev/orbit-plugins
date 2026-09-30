@@ -1,0 +1,53 @@
+name: Orbit Workflows
+slug: orbit-workflows
+summary: Versioned workflows for forms, approvals, parallel branches, escalation, and signatures.
+description: |
+  ## What it does
+
+  `WorkflowPlugin` adds an inbox, a case timeline, and a canvas designer.
+  A published document is the contract: statuses, steps, assignees, and a
+  full Orbit form. A case pins that version, so a later edit does not move
+  work already in flight.
+
+  Steps can be a form, an approval, a signature, a route, a notice, a fork,
+  or a join. Assignees are people, a role, the starter, an earlier answer, or
+  a guest link. An edge can call your code (and refuse) or start another workflow.
+
+  ## Install
+
+  ```bash
+  pip install almasix-orbit-workflows
+  ```
+
+  ```python
+  from almasix_orbit_workflows import WorkflowPlugin
+
+  panel.plugin(WorkflowPlugin.make())
+  ```
+
+  Full README: [almasix-orbit-workflows](https://github.com/almasix-dev/almasix-orbit-workflows).
+author: almasix
+categories:
+  - panel-kit
+orbit_versions:
+  - "0.5"
+price: free
+package: almasix-orbit-workflows
+github_repo: almasix-dev/almasix-orbit-workflows
+repository: https://github.com/almasix-dev/almasix-orbit-workflows
+docs_url: https://github.com/almasix-dev/almasix-orbit-workflows
+homepage: https://orbit.almasix.com/plugins/orbit-workflows/
+changelog_url: https://github.com/almasix-dev/almasix-orbit-workflows/commits/main
+license: MIT
+keywords:
+  - workflows
+  - approvals
+  - signatures
+  - forms
+requires_python: ">=3.11"
+features:
+  dark_mode: true
+  official: true
+  featured: false
+status: published
+published_at: 2026-09-30
