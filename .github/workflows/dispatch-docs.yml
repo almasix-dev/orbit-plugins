@@ -47,4 +47,22 @@ jobs:
               ;;
           esac
           body=$(curl -fsS -X POST "$DEPLOY_HOOK")
-          python3 -c 'import json,sys; data=json.load(sys.stdin); result=data.get("result") or {}; print("build", result.get("build_uuid") or "-", "status", result.get("status") or "-", "already", result.get("already_exists"))' <<<"$body"
+          python3 -c 'import json,sys; data=json.load(sys.stdin); result=data.get("result") or {}; print("orbit", result.get("build_uuid") or "-", "status", result.get("status") or "-", "already", result.get("already_exists"))' <<<"$body"
+
+      - name: Trigger Cloudflare rebuild of almasix.com
+        env:
+          DEPLOY_HOOK: ${{ secrets.ALMASIX_SITE_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "::warning::ALMASIX_SITE_DEPLOY_HOOK is not set — almasix.com/plugins will wait for the next site build"
+            exit 0
+          fi
+          case "$DEPLOY_HOOK" in
+            https://api.cloudflare.com/client/v4/workers/builds/deploy_hooks/*) ;;
+            *)
+              echo "::error::ALMASIX_SITE_DEPLOY_HOOK must be a Cloudflare Workers Builds deploy hook URL"
+              exit 1
+              ;;
+          esac
+          body=$(curl -fsS -X POST "$DEPLOY_HOOK")
+          python3 -c 'import json,sys; data=json.load(sys.stdin); result=data.get("result") or {}; print("almasix", result.get("build_uuid") or "-", "status", result.get("status") or "-", "already", result.get("already_exists"))' <<<"$body"
