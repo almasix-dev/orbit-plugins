@@ -2,7 +2,7 @@
 
 YAML listings, articles, and images for the [Orbit plugin marketplace](https://orbit.almasix.com/plugins/) and [articles](https://orbit.almasix.com/articles/).
 
-Authors open pull requests **here**. After merge, the Orbit docs site fetches this registry and rebuilds the public catalog.
+Authors open pull requests **here**. Merging to `main` is the release: that push asks Cloudflare to rebuild `almasix-orbit` so the public catalog picks up the registry, including README text fetched during that build.
 
 ## Layout
 

@@ -1,7 +1,9 @@
 name: Dispatch Orbit docs rebuild
 
-# After a listing merges, ask almasix-orbit to rebuild orbit.almasix.com so
-# /plugins picks up the new registry without waiting for an Orbit commit.
+# A merged pull request lands on main. That is the release of a listing.
+# GitHub Actions in almasix-orbit only builds; the public catalog updates when
+# Cloudflare Workers Builds rebuilds almasix-orbit. The deploy hook is the URL
+# from Workers → almasix-orbit-docs → Settings → Builds → Deploy hooks (branch main).
 
 on:
   push:
@@ -13,7 +15,7 @@ permissions:
 
 jobs:
   dispatch:
-    name: Trigger Orbit docs.yml
+    name: Rebuild the public catalog
     runs-on: ubuntu-latest
     steps:
       - name: repository_dispatch almasix-orbit
@@ -21,10 +23,28 @@ jobs:
           GH_TOKEN: ${{ secrets.ORBIT_DOCS_DISPATCH_TOKEN }}
         run: |
           if [ -z "$GH_TOKEN" ]; then
-            echo "::warning::ORBIT_DOCS_DISPATCH_TOKEN is not set — skip docs rebuild dispatch"
+            echo "::warning::ORBIT_DOCS_DISPATCH_TOKEN is not set — skip docs workflow dispatch"
             exit 0
           fi
           gh api repos/almasix-dev/almasix-orbit/dispatches \
             -f event_type=marketplace-registry-updated \
             -f client_payload[source]=orbit-plugins \
             -f client_payload[sha]="${GITHUB_SHA}"
+
+      - name: Trigger Cloudflare rebuild of almasix-orbit
+        env:
+          DEPLOY_HOOK: ${{ secrets.ORBIT_DOCS_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "::warning::ORBIT_DOCS_DEPLOY_HOOK is not set — the live catalog will not rebuild"
+            exit 0
+          fi
+          case "$DEPLOY_HOOK" in
+            https://api.cloudflare.com/client/v4/workers/builds/deploy_hooks/*) ;;
+            *)
+              echo "::error::ORBIT_DOCS_DEPLOY_HOOK must be a Cloudflare Workers Builds deploy hook URL"
+              exit 1
+              ;;
+          esac
+          body=$(curl -fsS -X POST "$DEPLOY_HOOK")
+          python3 -c 'import json,sys; data=json.load(sys.stdin); result=data.get("result") or {}; print("build", result.get("build_uuid") or "-", "status", result.get("status") or "-", "already", result.get("already_exists"))' <<<"$body"

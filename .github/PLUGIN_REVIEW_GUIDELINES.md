@@ -15,8 +15,10 @@ Authors should read [Get listed](https://orbit.almasix.com/plugins/get-listed/) 
 4. Read the listing in the preview build (`npm run build` → `dist/<slug>/`). Check both themes.
 5. For paid plugins, complete the private source review below before approving.
 
-After merge, Orbit docs rebuild via `dispatch-docs.yml` (needs
-`ORBIT_DOCS_DISPATCH_TOKEN`). The public catalog is
+After merge, `dispatch-docs.yml` rebuilds the public catalog. That needs
+`ORBIT_DOCS_DEPLOY_HOOK` (Cloudflare Workers Builds deploy hook for
+`almasix-orbit-docs`, branch `main`). `ORBIT_DOCS_DISPATCH_TOKEN` only starts
+the GitHub docs workflow, which does not deploy. The catalog is
 [orbit.almasix.com/plugins](https://orbit.almasix.com/plugins/).
 
 ## Standard replies
