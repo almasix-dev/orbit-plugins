@@ -45,6 +45,9 @@ keywords:
   - signatures
   - forms
 requires_python: ">=3.11"
+screenshots:
+  - src: /plugins/orbit-workflows/canvas.png
+    alt: Designer canvas of a contract workflow, with arrows from draft through a legal and finance fork to signature
 features:
   dark_mode: true
   official: true
